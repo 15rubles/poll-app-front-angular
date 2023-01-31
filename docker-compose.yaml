@@ -1,0 +1,29 @@
+version: '3'
+networks:
+    angular-spring-mysql-net:
+services:
+  mysqldb:
+    container_name: mysqldb
+    environment:
+      MYSQL_DATABASE: polls_app
+      MYSQL_PASSWORD: '1111'
+      MYSQL_ROOT_PASSWORD: '1111'
+      MYSQL_USER: user
+    image: mysql
+    networks:
+    - angular-spring-mysql-net
+
+  
+  spring-container:
+    container_name: spring
+    image: spring
+    networks:
+    - angular-spring-mysql-net
+    ports:
+    - 8080:8080
+  
+  angular-front:
+    container_name: angular-front
+    image: angular-app
+    ports:
+    - 4200:4200

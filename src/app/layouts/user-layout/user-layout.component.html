@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+</head>
+
+<body>
+
+    <div class="scroll">
+        <div class="container">
+            <div class="wrapper">
+                <div class="wrapper_menu">
+                    <button (click)="logout()">Logout</button>
+                    <button (click)="getSelfUser()">User info</button>
+                    <button (click)="openUpdateUser()">Update info</button>
+                    <button (click)="getAllowedPolls()">Polls</button>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="isUserInfoEnabled" class="container">
+            <div class="wrapper">
+                <h3>User info</h3>
+                <div>
+                    Username: {{user?.username}}
+                </div>
+                <div>
+                    Role: {{user?.role}}
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="wrapper">
+                <div>
+                    <h3>Polls</h3>
+                    <div>
+                        <h4>{{error}}</h4>
+                    </div>
+                    <div class="wrapper">
+                        <table class="wrapper_table">
+                            <tr class="th_titles">
+                                <th>Name</th>
+                                <th>Questions</th>
+                                <th>Answers</th>
+                            </tr>
+                            <tr *ngFor="let poll of allowedPolls">
+                                <th>{{poll?.name}}</th>
+                                <th>
+                                    <button type="button" (click)="getAllowedPollQuestions(poll?.id)">
+                                        Get questions
+                                    </button>
+                                </th>
+                                <th><button type="button" (click)="getAllSelfAnswersByPollId(poll?.id)">Answers</button>
+                                </th>
+                            </tr>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        <div *ngIf="isQuestionsEnabled" class="container">
+            <div class="wrapper">
+                <h3>Questions</h3>
+                <div *ngFor="let question of questions">
+                    <form action="#" name="questionForm" #questionForm>
+                        <div class="input-field-questions">
+                            {{question?.text}}
+                            <input class="pollId" type="text" value="{{question?.pollId}}" name="pollId" hidden>
+                            <input class="questionId" type="text" value="{{question?.id}}" name="questionId" hidden>
+                            <input class="answer" type="text" name="text" placeholder="Enter answer" required>
+                        </div>
+                    </form>
+                </div>
+                <h3>Questions with options</h3>
+                <div *ngFor="let question of questionsWithOptions">
+                    <form action="#" #answerWithOptionsForm="ngForm" name="questionWithOptionsForm"
+                        onsubmit="addSelfAnswer(answerWithOptionsForm)" #questionWithOptionsForm>
+                        <div>
+                            <h5>Question: {{question?.text}}</h5>
+                        </div>
+                        <div>
+                            <h6> Options:</h6>
+                        </div>
+                        <div class="input-field-questions-with-options">
+                            <div *ngFor="let option of question.options">
+                                {{option}}
+                                <input class="answer" type="radio" value="{{option}}" name="text" required>
+
+                            </div>
+                            <input class="pollId" type="text" value="{{question?.pollId}}" name="pollId" hidden>
+                            <input class="questionId" type="text" value="{{question?.id}}" name="questionId" hidden>
+                        </div>
+                    </form>
+                    <br>
+                </div>
+                <div>
+                    <button class="submit" type="button" (click)="applyAllQuestionForms()">Submit</button>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="isUpdateUserEnable" class="container">
+            <div class="wrapper">
+                <div>
+                    <h3>Update user</h3>
+                    <form action="#" #userForm="ngForm" (ngSubmit)="updateUser(userForm)">
+                        <div class="input-field">
+                            <input type="text" ngModel name="username" placeholder="Enter new username" required>
+                        </div>
+                        <div class="input-field">
+                            <input type="text" ngModel name="password" placeholder="Enter new password" required>
+                        </div>
+                        <div class="input-field button">
+                            <input type="submit" value="Update">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="isAnswersEnabled" class="container">
+            <div class="wrapper">
+                <h3>Answers</h3>
+                <table>
+                    <tr class="th_titles">
+                        <th>Question</th>
+                        <th>Answer</th>
+                    </tr>
+                    <tr *ngFor="let answer of answers">
+                        <th>{{answer?.questionText}}</th>
+                        <th>{{answer?.text}}</th>
+                    </tr>
+                </table>
+
+            </div>
+        </div>
+    </div>
+
+
+</body>
+
+
+</html>

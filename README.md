@@ -25,3 +25,22 @@ Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To u
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+
+
+## docker-compose
+
+`docker build -t spring .`
+
+`docker build -t angular-app .`
+
+`docker-compose up`
+
+run bash commands for mysql container:
+
+`mysql -uuser -p1111`
+
+`use polls_app;`
+
+`insert into user (auth,  password, username) values (1, '$2a$10$INr0GWG3JeS/uwkRn.56jucz5SleuOeqmHS1xHS5QkActz82ScbQm', 'admin');`
+
+`quit`

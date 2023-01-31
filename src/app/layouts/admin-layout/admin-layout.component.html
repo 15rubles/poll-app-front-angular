@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+</head>
+
+<body>
+    <div class="scroll">
+
+        <div class="container">
+            <div class="wrapper">
+                <div class="wrapper_menu">
+                    <button (click)="logout()">Logout</button>
+                    <button (click)="getSelfUser()">User info</button>
+                    <button (click)="openUpdateSelfUser()">Update info</button>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="isUserInfoEnabled" class="container">
+            <div class="wrapper">
+                <h3>User info</h3>
+                <div>
+                    Username: {{user?.username}}
+                </div>
+                <div>
+                    Role: {{user?.role}}
+                </div>
+            </div>
+        </div>
+        <div *ngIf="error != ''" class="container">
+            <div class="wrapper">
+                <h4>{{error}}</h4>
+            </div>
+        </div>
+        <div *ngIf="isUpdateSelfUserEnabled" class="container">
+            <div class="wrapper">
+                <h3>Update user</h3>
+                <form action="#" #userForm="ngForm" (ngSubmit)="updateUser(userForm)">
+                    <div class="input-field">
+                        <input type="text" ngModel name="username" placeholder="Enter new username" required>
+                    </div>
+                    <div class="input-field">
+                        <input type="text" ngModel name="password" placeholder="Enter new password" required>
+                    </div>
+                    <br>
+                    <div>
+                        <input class="button_button" type="submit" value="Update">
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="container">
+            <div class="wrapper">
+                <div class="wrapper_menu">
+                    <h3>Admin menu</h3>
+                    <button (click)="switchMenu('user')">User</button>
+                    <button (click)="switchMenu('poll')">Poll</button>
+                    <button (click)="switchMenu('question')">Question</button>
+                    <button (click)="switchMenu('questionWithOptions')">Question with options</button>
+                    <button (click)="switchMenu('answer')">Answer</button>
+                </div>
+            </div>
+        </div>
+
+
+        <div *ngIf="userMenu">
+
+            <div class="container">
+                <div class="wrapper">
+                    <h3>User</h3>
+                    <div>
+                        <p>Add user</p>
+                    </div>
+                    <form action="#" #addUserForm="ngForm" (ngSubmit)="addUser(addUserForm)">
+                        <div class="input-field">
+                            <input type="text" ngModel name="username" placeholder="Enter username" required>
+                        </div>
+                        <div class="input-field">
+                            <input type="text" ngModel name="password" placeholder="Enter password" required>
+                        </div>
+                        <div class="input-field">
+                            <select ngModel name="role" required>
+                                <option value="USER">USER</option>
+                                <option value="LEAD">LEAD</option>
+                                <option value="ADMIN">ADMIN</option>
+                            </select>
+                        </div>
+                        <div>
+                            <input class="button_button" type="submit" value="Add">
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="container">
+                <div class="wrapper">
+                    <div>
+                        <p>Find user by id</p>
+                    </div>
+                    <form action="#" #userByIdForm="ngForm" (ngSubmit)="findUserById(userByIdForm)">
+                        <div class="input-field ">
+                            <input type="text" ngModel name="userId" placeholder="Enter user id" required>
+                            <input class="button_button" type="submit" value="Find">
+                        </div>
+                    </form>
+                    <br>
+                    <div>
+                        <button class="button_button" (click)="getUsers()">Get all users</button>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="wrapper">
+                    <table class="wrapper_table">
+                        <tr class="th_titles">
+                            <th>Id</th>
+                            <th>Username</th>
+                            <th>Role</th>
+                            <th>Update</th>
+                            <th>Delete</th>
+                        </tr>
+                        <tr *ngFor="let user of users">
+                            <th>{{user?.id}}</th>
+                            <th>{{user?.username}}</th>
+                            <th>{{user?.role}}</th>
+                            <th><button (click)="openUpdateUser(user?.id)">Update</button></th>
+                            <th><button (click)="deleteUser(user?.id)">Delete</button></th>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div *ngIf="isUpdateUserEnabled" class="container">
+                <div class="wrapper">
+                    <div>
+                        <p>Update user</p>
+                    </div>
+                    <form action="#" #updateUserForm="ngForm" (ngSubmit)="updateUser(updateUserForm)">
+                        <div class="input-field">
+                            <input type="text" ngModel name="username" placeholder="Enter username" required>
+                        </div>
+                        <div class="input-field">
+                            <input type="text" ngModel name="password" placeholder="Enter password" required>
+                        </div>
+                        <div class="input-field">
+                            <select ngModel name="role" required>
+                                <option value="USER" selected>USER</option>
+                                <option value="LEAD">LEAD</option>
+                                <option value="ADMIN">ADMIN</option>
+                            </select>
+                        </div>
+                        <div class="input-fiels">
+                            <input class="button_button" type="submit" value="Update">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="pollMenu">
+            <div class="container">
+                <div class="wrapper">
+                    <h3>Poll</h3>
+                    <div>
+                        <p>Add poll</p>
+                    </div>
+                    <form action="#" #addPollForm="ngForm" (ngSubmit)="addPoll(addPollForm)">
+                        <div class="input-field">
+                            <input type="text" ngModel name="name" placeholder="Enter name" required>
+                        </div>
+                        <div class="input-field">
+                            <input type="text" ngModel name="ownerUserId" placeholder="Enter ownerUserId" required>
+                        </div>
+                        <br>
+                        <div>
+                            <input class="button_button" type="submit" value="Add">
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="container">
+                <div class="wrapper">
+                    <div>
+                        <p>Find poll by id</p>
+                    </div>
+                    <form action="#" #pollByIdForm="ngForm" (ngSubmit)="findPollById(pollByIdForm)">
+                        <div class="input-field">
+                            <input type="text" ngModel name="pollId" placeholder="Enter poll id" required>
+                            <input class="button_button" type="submit" value="Find">
+                        </div>
+                    </form>
+                    <br>
+                    <button class="button_button" (click)="getPolls()">Get all polls</button>
+                </div>
+            </div>
+            <div class="container">
+                <div class="wrapper">
+                    <table class="wrapper_table">
+                        <tr class="th_titles">
+                            <th>Id</th>
+                            <th>Name</th>
+                            <th>ownerUserId</th>
+                            <th>isDeleted</th>
+                            <th>Update</th>
+                            <th>Delete</th>
+                        </tr>
+                        <tr *ngFor="let poll of polls">
+                            <th>{{poll?.id}}</th>
+                            <th>{{poll?.name}}</th>
+                            <th>{{poll?.ownerUserId}}</th>
+                            <th>{{poll?.isDeleted}}</th>
+                            <th><button (click)="openUpdatePoll(poll?.id)">Update</button></th>
+                            <th><button (click)="deletePoll(poll?.id)">Delete</button></th>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div *ngIf="isUpdatePollEnabled" class="container">
+                <div class="wrapper">
+                    <div>
+                        <div>
+                            <p>Update poll</p>
+                        </div>
+                        <form action="#" #updatePollForm="ngForm" (ngSubmit)="updatePoll(updatePollForm)">
+                            <div class="input-field">
+                                <input type="text" ngModel name="name" placeholder="Enter name" required>
+                            </div>
+                            <div class="input-field">
+                                <input type="text" ngModel name="ownerUserId" placeholder="Enter ownerUserId" required>
+                            </div>
+                            <div>
+                                <input class="checkbox" type="checkbox" value="1" ngModel name="isDeleted"> isDeleted
+                            </div>
+                            <br>
+                            <input class="button_button" type="submit" value="Update">
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+        <div *ngIf="questionMenu">
+            <div class="container">
+                <div class="wrapper">
+                    <h3>Question</h3>
+                    <div>
+                        <p>Add question</p>
+                    </div>
+                    <form action="#" #addQuestionForm="ngForm" (ngSubmit)="addQuestion(addQuestionForm)">
+
+                        <div class="input-field">
+                            <input type="text" ngModel name="text" placeholder="Enter text" required>
+                        </div>
+                        <div class="input-field">
+                            <input type="text" ngModel name="pollId" placeholder="Enter pollId" required>
+                        </div>
+                        <br>
+                        <input class="button_button" type="submit" value="Add">
+                    </form>
+                </div>
+            </div>
+            <div class="container">
+                <div class="wrapper">
+                    <div>
+                        <p>Find questions in poll</p>
+                    </div>
+                    <form action="#" #qByPollIdForm="ngForm" (ngSubmit)="getQuestionsInPoll(qByPollIdForm)">
+                        <div class="input-field">
+                            <input type="text" ngModel name="pollId" placeholder="Enter poll id" required>
+                            <input class="button_button" type="submit" value="Find">
+                        </div>
+                    </form>
+                    <br>
+                    <br>
+                    <div>
+                        <p>Find question by id</p>
+                    </div>
+                    <form action="#" #qByIdForm="ngForm" (ngSubmit)="findQuestionById(qByIdForm)">
+                        <div class="input-field">
+                            <input type="text" ngModel name="qId" placeholder="Enter question id" required>
+                            <input class="button_button" type="submit" value="Find">
+                        </div>
+                    </form>
+                    <br>
+                    <button class="button_button" (click)="getQuestions()">Get all questions</button>
+                </div>
+            </div>
+            <div class="container">
+                <div class="wrapper">
+                    <table class="wrapper_table">
+                        <tr class="th_titles">
+                            <th>Id</th>
+                            <th>Text</th>
+                            <th>Right answer</th>
+                            <th>Poll id</th>
+                            <th>Update</th>
+                            <th>Delete</th>
+                        </tr>
+                        <tr *ngFor="let question of questions">
+                            <th>{{question?.id}}</th>
+                            <th>{{question?.text}}</th>
+                            <th>{{question?.rightAnswer}}</th>
+                            <th>{{question?.pollId}}</th>
+                            <th><button (click)="openUpdateQuestion(question?.id)">Update</button></th>
+                            <th><button (click)="deleteQuestion(question?.id)">Delete</button></th>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div *ngIf="isUpdateQuestionEnabled" class="container">
+                <div class="wrapper">
+                    <div>
+                        <p>Update question</p>
+                    </div>
+                    <form action="#" #updateQuestionForm="ngForm" (ngSubmit)="updateQuestion(updateQuestionForm)">
+                        <div class="input-field">
+                            <input type="text" ngModel name="text" placeholder="Enter text" required>
+                        </div>
+                        <div class="input-field">
+                            <input type="text" ngModel name="pollId" placeholder="Enter pollId" required>
+                        </div>
+                        <br>
+                        <input class="button_button" type="submit" value="Update">
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+        <div *ngIf="questionWithOptionsMenu">
+            <div class="container">
+                <div class="wrapper">
+                    <h3>Question with options</h3>
+                    <div>
+                        <p>Add question with options</p>
+                    </div>
+                    <form action="#" #addQuestionWithOptionsForm="ngForm"
+                        (ngSubmit)="addQuestionWithOptions(addQuestionWithOptionsForm)">
+                        <div class="input-field">
+                            <input type="text" ngModel name="text" placeholder="Enter question text" required>
+                        </div>
+                        <div class="input-field">
+                            <input type="text" ngModel name="pollId" placeholder="Enter question poll id" required>
+                        </div>
+                        <br>
+                        <div>
+                            Options
+                        </div>
+                        <div class="input-field-q-options list add" id="1">
+                            <input class="radio" type="radio" ngModel name="answer">
+                            <input class="option" type="text" ngModel name="options" placeholder="Enter question option"
+                                required>
+                        </div>
+                        <div class="input-field-q-options list add hidden">
+                            <input class="radio" type="radio" name="answer">
+                            <input class="option" type="text" ngModel name="options" placeholder="Enter question option"
+                                required>
+                            <!-- ToDo add remove button -->
+                            <!-- <button type="button" (click)="addOption()">Remove</button>  -->
+                        </div>
+                        <div class="plus add" (click)="addOption('add')">
+                            + Add option
+                        </div>
+                        <br>
+                        <input class="button_button" type="submit" value="Add">
+                    </form>
+                </div>
+            </div>
+            <div class="container">
+                <div class="wrapper">
+                    <div>
+                        <p>Find questions with options in poll</p>
+                    </div>
+                    <form action="#" #qWithOptionsByPollIdForm="ngForm"
+                        (ngSubmit)="getQuestionsWithOptionsInPoll(qWithOptionsByPollIdForm)">
+                        <div class="input-field">
+                            <input type="text" ngModel name="pollId" placeholder="Enter poll id" required>
+                            <input class="button_button" type="submit" value="Find">
+                        </div>
+                    </form>
+                    <br>
+                    <br>
+                    <div>
+                        <p>Find question with options by id</p>
+                    </div>
+                    <form action="#" #qWithOptionsByIdForm="ngForm"
+                        (ngSubmit)="findQuestionWithOptionsById(qWithOptionsByIdForm)">
+                        <div class="input-field">
+                            <input type="text" ngModel name="qId" placeholder="Enter question id" required>
+                            <input class="button_button" type="submit" value="Find">
+                        </div>
+                    </form>
+                    <br>
+                    <button class="button_button" (click)="getQuestionsWithOptions()">Get all questions</button>
+                </div>
+            </div>
+            <div class="container">
+                <div class="wrapper">
+                    <table class="wrapper_table">
+                        <tr class="th_titles">
+                            <th>Id</th>
+                            <th>Text</th>
+                            <th>Options</th>
+                            <th>Right answer</th>
+                            <th>Poll id</th>
+                            <th>Update</th>
+                            <th>Delete</th>
+                        </tr>
+                        <tr *ngFor="let question of questionsWithOptions">
+                            <th>{{question?.id}}</th>
+                            <th>{{question?.text}}</th>
+                            <th>{{question?.options}}</th>
+                            <th>{{question?.rightAnswer}}</th>
+                            <th>{{question?.pollId}}</th>
+                            <th><button (click)="openUpdateQuestionWithOptions(question?.id)">Update</button></th>
+                            <th><button (click)="deleteQuestionWithOptions(question?.id)">Delete</button></th>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div *ngIf="isUpdateQuestionWithOptionsEnabled" class="container">
+                <div class="wrapper">
+                    <div>
+                        <p>Update question with options</p>
+                    </div>
+                    <form action="#" #updateQWithOptionsForm="ngForm"
+                        (ngSubmit)="updateQuestionWithOptions(updateQWithOptionsForm)">
+                        <div class="input-field">
+                            <input type="text" ngModel name="text" placeholder="Enter question text" required>
+                        </div>
+                        <div class="input-field">
+                            <input type="text" ngModel name="pollId" placeholder="Enter question poll id" required>
+                        </div>
+                        <br>
+                        <div>
+                            Options
+                        </div>
+                        <div class="input-field-q-options list add" id="1">
+                            <input class="radio" type="radio" ngModel name="answer">
+                            <input class="option" type="text" ngModel name="options" placeholder="Enter question option"
+                                required>
+                        </div>
+                        <div class="input-field-q-options list add hidden">
+                            <input class="radio" type="radio" name="answer">
+                            <input class="option" type="text" ngModel name="options" placeholder="Enter question option"
+                                required>
+                            <!-- ToDo add remove button -->
+                            <!-- <button type="button" (click)="addOption()">Remove</button>  -->
+                        </div>
+                        <div class="plus upd" (click)="addOption('upd')">
+                            + Add option
+                        </div>
+                        <br>
+                        <input class="button_button" type="submit" value="Update">
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+        <div *ngIf="answerMenu">
+            <div class="container">
+                <div class="wrapper">
+                    <h3>Answer</h3>
+                    <div>
+                        <p>Add answer</p>
+                    </div>
+                    <form action="#" #addAnswerForm="ngForm" (ngSubmit)="addAnswer(addAnswerForm)">
+                        <div class="input-field">
+                            <input type="text" ngModel name="text" placeholder="Enter text" required>
+                        </div>
+                        <div class="input-field">
+                            <input type="text" ngModel name="pollId" placeholder="Enter pollId" required>
+                        </div>
+                        <div class="input-field">
+                            <input type="text" ngModel name="questionId" placeholder="Enter questionId" required>
+                        </div>
+                        <div class="input-field">
+                            <input type="text" ngModel name="userId" placeholder="Enter userId" required>
+                        </div>
+                        <div>
+                            <input class="checkbox" type="checkbox" ngModel name="withOptions" required> With options ?
+                        </div>
+                        <br>
+                        <input class="button_button" type="submit" value="Add">
+                    </form>
+                </div>
+            </div>
+            <div class="container">
+                <div class="wrapper">
+                    <div>
+                        <p>Find answers in poll</p>
+                    </div>
+                    <form action="#" #answersByPollIdForm="ngForm"
+                        (ngSubmit)="getAllAnswersByPollId(answersByPollIdForm)">
+                        <div class="input-field">
+                            <input type="text" ngModel name="pollId" placeholder="Enter poll id" required>
+                            <input class="button_button" type="submit" value="Find">
+                        </div>
+                    </form>
+                    <br>
+                    <div>
+                        <p>Find answers by id</p>
+                    </div>
+                    <form action="#" #answersByIdForm="ngForm" (ngSubmit)="findAnswerById(answersByIdForm)">
+                        <div class="input-field">
+                            <input type="text" ngModel name="answerId" placeholder="Enter answer id" required>
+                            <input class="button_button" type="submit" value="Find">
+                        </div>
+                    </form>
+                    <br>
+                    <div>
+                        <p>Find answers by poll id and user id</p>
+                    </div>
+                    <form action="#" #answersByUserAndPollIdForm="ngForm"
+                        (ngSubmit)="findAnswersByPollIdAndUserId(answersByUserAndPollIdForm)">
+                        <div class="input-field">
+                            <input type="text" ngModel name="pollId" placeholder="Enter poll id" required>
+                        </div>
+                        <div class="input-field">
+                            <input type="text" ngModel name="userId" placeholder="Enter user id" required>
+                        </div>
+                        <br>
+                        <input class="button_button" type="submit" value="Find">
+                    </form>
+                    <br>
+                    <button class="button_button" (click)="getAnswers()">Get all answers</button>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="wrapper">
+                    <table class="wrapper_table">
+                        <tr class="th_titles">
+                            <th>Id</th>
+                            <th>Text</th>
+                            <th>Poll id</th>
+                            <th>Question id</th>
+                            <th>User id</th>
+                            <th>With options</th>
+                            <th>Update</th>
+                            <th>Delete</th>
+                        </tr>
+                        <tr *ngFor="let answer of answers">
+                            <th>{{answer?.id}}</th>
+                            <th class="th_answer" title="{{answer?.text}}">{{answer?.text}}</th>
+                            <th>{{answer?.pollId}}</th>
+                            <th>{{answer?.questionId}}</th>
+                            <th>{{answer?.userId}}</th>
+                            <th>{{answer?.withOptions}}</th>
+                            <th><button (click)="openUpdateAnswer(answer?.id)">Update</button></th>
+                            <th><button (click)="deleteAnswer(answer?.id)">Delete</button></th>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div *ngIf="isUpdateAnswerEnabled" class="container">
+                <div class="wrapper">
+                    <div>
+                        <p>Update answer</p>
+                    </div>
+                    <form action="#" #updateAnswerForm="ngForm" (ngSubmit)="updateAnswer(updateAnswerForm)">
+                        <div class="input-field">
+                            <input type="text" ngModel name="text" placeholder="Enter text" required>
+                        </div>
+                        <div class="input-field">
+                            <input type="text" ngModel name="pollId" placeholder="Enter pollId" required>
+                        </div>
+                        <div class="input-field">
+                            <input type="text" ngModel name="questionId" placeholder="Enter questionId" required>
+                        </div>
+                        <div class="input-field">
+                            <input type="text" ngModel name="userId" placeholder="Enter userId" required>
+                        </div>
+                        <div>
+                            <input class="checkbox" type="checkbox" ngModel name="withOptions" required> With options ?
+                        </div>
+                        <br>
+                        <input class="button_button" type="submit" value="Update">
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+        <p>{{result}}</p>
+
+    </div>
+</body>
+
+
+</html>
